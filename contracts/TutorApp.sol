@@ -1,6 +1,6 @@
 // This contract manages the application. That includes tracking user accounts, balances, reputation, and active video contracts.
 
-contract App {
+contract TutorApp {
 
   struct Tutor {
     string name;

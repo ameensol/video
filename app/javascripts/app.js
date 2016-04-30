@@ -1,40 +1,26 @@
 var accounts;
 var account;
-var balance;
 
-function setStatus(message) {
-  var status = document.getElementById("status");
-  status.innerHTML = message;
-};
+/* ROUTER */
 
-function refreshBalance() {
-  var meta = MetaCoin.deployed();
+/* Home */
+function helpme() {
+  console.log('helpme')
+}
+function ihelp() {
+  console.log('ihelp')
+}
+/* Help me */
 
-  meta.getBalance.call(account, {from: account}).then(function(value) {
-    var balance_element = document.getElementById("balance");
-    balance_element.innerHTML = value.valueOf();
-  }).catch(function(e) {
-    console.log(e);
-    setStatus("Error getting balance; see log.");
-  });
-};
+/* Help us help you */
 
-function sendCoin() {
-  var meta = MetaCoin.deployed();
+/* Help is on the way */
 
-  var amount = parseInt(document.getElementById("amount").value);
-  var receiver = document.getElementById("receiver").value;
+/* Helper dashboard */
 
-  setStatus("Initiating transaction... (please wait)");
+/* Video (Student) */
 
-  meta.sendCoin(receiver, amount, {from: account}).then(function() {
-    setStatus("Transaction complete!");
-    refreshBalance();
-  }).catch(function(e) {
-    console.log(e);
-    setStatus("Error sending coin; see log.");
-  });
-};
+/* Video (Tutor) */
 
 window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {
@@ -50,7 +36,5 @@ window.onload = function() {
 
     accounts = accs;
     account = accounts[0];
-
-    refreshBalance();
   });
 }

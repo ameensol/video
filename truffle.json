@@ -10,7 +10,7 @@
     "images/": "images/"
   },
   "deploy": [
-    "MetaCoin"
+    "TutorApp"
   ],
   "rpc": {
     "host": "localhost",
