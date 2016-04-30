@@ -1,10 +1,16 @@
 var accounts;
 var account;
+var student;
 
 /* ROUTER */
-
 /* Home */
 function helpme() {
+  document.getElementById('page1').style.display = 'none'
+  document.getElementById('page2').style.display = 'block'
+
+  // TODO If student.name is not present, display a form for the name.
+
+  document.getElementById('studentName').innerHTML = 'Ameen'
   console.log('helpme')
 }
 function ihelp() {
@@ -22,6 +28,12 @@ function ihelp() {
 
 /* Video (Tutor) */
 
+/* RENDERERS */
+/* Help us help you */
+function renderHUHY() {
+  return
+}
+
 window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
@@ -36,5 +48,7 @@ window.onload = function() {
 
     accounts = accs;
     account = accounts[0];
+
+    // TODO get student details, save in *student* global
   });
 }

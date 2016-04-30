@@ -14,19 +14,52 @@
 </head>
 <body>
   <div id='root'>
-    <br/>
-    <br/>
-    <br/>
-    <h1>Instant Tutors</h1>
-    <h3>The fastest way to get unstuck</h3>
-    <!-- Raised button -->
-    <button id='helpmeButton' class="mdl-button mdl-js-button mdl-button--raised" onclick=helpme()>
-      I need help
-    </button>
-    <!-- Raised button -->
-    <button id='ihelpButton' class="mdl-button mdl-js-button mdl-button--raised" onclick=ihelp()>
-      I'm here to help
-    </button>
+
+    <div id='page1'>
+      <br/>
+      <br/>
+      <br/>
+      <h1>Instant Tutors</h1>
+      <h3>The fastest way to get unstuck</h3>
+      <!-- Raised button -->
+      <button id='helpmeButton' class="mdl-button mdl-js-button mdl-button--raised" onclick=helpme()>
+        I need help
+      </button>
+      <!-- Raised button -->
+      <button id='ihelpButton' class="mdl-button mdl-js-button mdl-button--raised" onclick=ihelp()>
+        I'm here to help
+      </button>
+    </div><!-- page 1 -->
+
+    <div id='page2' style='display:none'>
+      <br/>
+      <br/>
+      <br/>
+      <h1>Help us help you!</h1>
+      <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--6-col">
+          <div class="mdl-textfield mdl-js-textfield boxWrapper">
+            <h5>What seems to be the problem?</h5>
+            <textarea class="mdl-textfield__input textbox" type="text" rows="4" id="problemBox"></textarea>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield boxWrapper">
+            <h5>What subjects does your problem involve?</h5>
+            <textarea class="mdl-textfield__input textbox" type="text" rows="1"></textarea>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield boxWrapper">
+            <h5>How long are you willing to wait?</h5>
+            <textarea class="mdl-textfield__input textbox" type="text" rows="1"></textarea>
+          </div>
+        </div>
+        <div class="mdl-cell mdl-cell--6-col">
+          <h3>Hello <span id='studentName'></span></h3>
+          <button id='getHelpButton' class="mdl-button mdl-js-button mdl-button--raised" onclick=helpIsOnTheWay()>
+            Get Help
+          </button>
+        </div>
+      </div>
+    </div> <!-- page 2 -->
+
   </div>
 </body>
 </html>
