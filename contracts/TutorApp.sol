@@ -28,7 +28,7 @@ contract TutorApp {
   );
 
   event TutorResponded(
-    address indexed sessionAddr,
+    address sessionAddr,
     address indexed tutorAddr,
     uint indexed bid
   );
@@ -61,15 +61,30 @@ contract TutorApp {
     TutorResponded(sessionAddress, address(msg.sender), bid);
   }
 
+  function selectTutor(uint index) {
+    Student student = students[msg.sender];
+    Session sessionAddress = Session(student.session);
+    address tutorAddr = sessionAddress.selectTutor(index);
+    TutorSelected(tutorAddr);
+  }
+
   function getSessionBidders(Session sessionAddress)
     constant returns (uint count)
   {
     count = sessionAddress.getRespondingTutorsCount();
   }
 
-  function getStudentDetails(address addr) constant returns (string, uint, uint) {
+  function getSelectedTutor(Session sessionAddress)
+    constant returns (address, uint)
+  {
+    return sessionAddress.getSelectedTutor();
+  }
+
+  function getStudentDetails(address addr)
+    constant returns (string, uint, uint, address)
+  {
     Student student = students[addr];
-    return (student.name, student.balance, student.reputation);
+    return (student.name, student.balance, student.reputation, student.session);
   }
 }
 
@@ -97,7 +112,7 @@ contract Session {
     Debrief
   }
 
-  modifier onlyOwner { if (msg.sender != student) throw; _ }
+  modifier onlyOwner { if (msg.sender != owner) throw; _ }
 
   modifier atStage(Stages _stage) { if (stage != _stage) throw; _ }
 
@@ -119,7 +134,7 @@ contract Session {
     for (uint i=0; i < respondingTutors.length; i++) {
       if (respondingTutors[i].addr == msg.sender) throw;
     }
-    respondingTutors.push(Tutor(msg.sender, bid));
+    respondingTutors.push(Tutor(tutorAddr, bid));
   }
 
   // get number of responding tutors so far
@@ -127,13 +142,26 @@ contract Session {
     count = respondingTutors.length;
   }
 
-  // student selects a tutor, they enter the grace period
-  function selectTutor(uint index) onlyOwner atStage(Stages.RequestingHelp) {
-    selectedTutor = respondingTutors[index];
+  function getSelectedTutor() constant returns (address, uint) {
+    return (selectedTutor.addr, selectedTutor.bid);
+  }
+
+  // student selects a tutor, they begin instruction
+  function selectTutor(uint index)
+    onlyOwner atStage(Stages.RequestingHelp) returns (address tutorAddr)
+  {
+    // no tutors have responded yet
+    if (respondingTutors.length == 0) throw;
+    selectedTutor = Tutor(
+      respondingTutors[index].addr,
+      respondingTutors[index].bid
+    );
     stage = Stages.Instruction;
+    return selectedTutor.addr;
   }
 
   function completeInstruction() onlyOwner atStage(Stages.Instruction) {
+    // TODO payment
     stage = Stages.Debrief;
   }
 

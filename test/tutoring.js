@@ -14,7 +14,7 @@ contract('TutorApp', function(accounts) {
     }).catch(done)
   })
 
-  it('should log when a new session is created',
+  it('should log when a new session is created and save session on student',
   function (done) {
     var tutoring = TutorApp.deployed()
 
@@ -25,6 +25,7 @@ contract('TutorApp', function(accounts) {
     var sessionCreatedEvent = tutoring.SessionCreated()
 
     sessionCreatedEvent.watch(function(error, result) {
+      sessionCreatedEvent.stopWatching()
       if (error) {
         console.log('fail')
         console.log(error)
@@ -34,8 +35,12 @@ contract('TutorApp', function(accounts) {
         assert.equal(problem, result.args._problem)
         assert.equal(tags, result.args._tags)
         assert.equal(timeLimit, result.args.timeLimit.valueOf())
-        sessionCreatedEvent.stopWatching()
-        done()
+
+        // make sure the session address is saved on the student
+        tutoring.getStudentDetails(result.args._student).then(function (student) {
+          assert.equal(student[3].valueOf(), result.args._session)
+          done()
+        })
       }
     })
 
@@ -54,6 +59,7 @@ contract('TutorApp', function(accounts) {
     var sessionCreatedEvent = tutoring.SessionCreated()
 
     sessionCreatedEvent.watch(function(error, result) {
+      sessionCreatedEvent.stopWatching()
       if (error) {
         console.log('fail')
         console.log(error)
@@ -69,7 +75,44 @@ contract('TutorApp', function(accounts) {
 
     tutoring.createSession(problem, tags, timeLimit, { from: accounts[0] })
     .catch(done)
+  })
 
+  it.only('should allow student to select a tutor', function(done) {
+    var tutoring = TutorApp.deployed()
+
+    var problem = 'python is hard'
+    var tags = 'python'
+    var timeLimit = 10
+    var bid = 10
+
+    var sessionCreatedEvent = tutoring.SessionCreated()
+
+    sessionCreatedEvent.watch(function(error, result) {
+      sessionCreatedEvent.stopWatching()
+      var sessionAddr = result.args._session
+      if (error) {
+        console.log('fail')
+        console.log(error)
+      } else {
+        tutoring.respondToHelpRequest(sessionAddr, bid, {from: accounts[1]})
+        .then(function() {
+          return tutoring.getSessionBidders(sessionAddr)
+        }).then(function(count) {
+          return tutoring.selectTutor(0, { from: accounts[0] })
+        }).then(function() {
+          return tutoring.getSelectedTutor(sessionAddr)
+        }).then(function (tutor) {
+          var addr = tutor[0].valueOf()
+          var bid = tutor[1].valueOf()
+          assert.equal(accounts[1], tutor[0].valueOf())
+          assert.equal(bid, tutor[1].valueOf())
+          done()
+        }).catch(done)
+      }
+    })
+
+    tutoring.createSession(problem, tags, timeLimit, { from: accounts[0] })
+    .catch(done)
   })
 
 })
