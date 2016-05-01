@@ -87,6 +87,7 @@ function addResponse(tutorObj) {
 var responses = 0
 
 function renderResponse(tutor) {
+  console.log(tutor)
   responses += 1
   var rate = tutor.rate || 60
   var reputation = tutor.reputation || 1000
@@ -103,7 +104,7 @@ function renderResponse(tutor) {
           Hi I'm Chuck Norris. Whatever your problem is, you can rest assured that I will personally take on the challenge.
         </div>
         <div class="mdl-card__actions mdl-card--border">
-          <a onClick="acceptHelp(${responses - 1})" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+          <a onClick="acceptHelp(${responses - 1}, ${tutor.sessionAddr})" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
             Start Video Chat
           </a>
         </div>
@@ -183,14 +184,18 @@ function offerHelp(sessionAddress) {
   })
 }
 
-function acceptHelp(index) {
+function acceptHelp(index, sessionAddr) {
   console.log('accept help')
   console.log(index)
   tutorApp = TutorApp.deployed()
   tutorApp.appSelectTutor(index, { from: accounts[0] }).then(function () {
     console.log('tutor selected')
+    return tutorApp.getSelectedTutor(sessionAddr)
     // engage video chat on this end
     // also engage on other end via event listener?
+  }).then(function (selectedTutor) {
+    console.log('selectedTutor')
+    console.log(selectedTutor)
   })
 }
 
@@ -256,10 +261,11 @@ window.onload = function() {
         tutorObj.tutorAddr = event.args.tutorAddr
 
         tutorApp.getTutorDetails(tutorObj.tutorAddr).then(function(details) {
-          console.log(details)
           tutorObj.name = details[0]
           tutorObj.reputation = details[1].valueOf()
-          addResponse(tutorObj.sessionAddr)
+          console.log('add response')
+          console.log(tutorObj)
+          addResponse(tutorObj)
         })
       }
     }))
