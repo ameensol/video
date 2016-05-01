@@ -106,6 +106,13 @@ contract TutorApp {
     return (student.name, student.balance, student.reputation, student.session);
   }
 
+  function getTutorDetails(address addr)
+    constant returns (string, uint)
+  {
+    Tutor tutor = tutors[addr];
+    return (tutor.name, tutor.reputation);
+  }
+
   function getSessionStage(Session sessionAddr) constant returns (uint) {
     return uint(sessionAddr.stage());
   }

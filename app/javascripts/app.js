@@ -9,6 +9,9 @@ var page = 1
 var requests = []
 var responses = []
 
+// keeping this here to mock
+var sessionAddr;
+
 /* ROUTER */
 /* Home */
 function helpme() {
@@ -76,22 +79,34 @@ function studentDashboard() {
   document.getElementById('page3').style.display = 'block'
 }
 
-function renderResponse() {
+function addResponse(tutorObj) {
+  var helperList = document.getElementById('helperResponseList')
+  var placeholder = document.getElementById('helpResponsePlaceholder')
+  if (placeholder) { helperList.innerHTML = '' }
+  helperList.innerHTML = renderResponse(tutorObj) + helperList.innerHTML
+}
+
+var responses = 0
+
+function renderResponse(tutor, count) {
+  responses += 1
+  var rate = tutor.rate || 60
+  var reputation = tutor.reputation || 1000
   return `
   <li class="mdl-list__item">
     <div class='helpResponse'>
       <div class="demo-card-wide mdl-card mdl-shadow--2dp">
         <div class="mdl-card__title">
           <h2 class="mdl-card__title-text">Chuck Norris</h2>
-          <p class='reputation'>Reputation: ${tutor.reputation}</p>
-          <p class='rate'>Rate: ${tutor.rate}</p>
+          <p class='reputation'>Reputation: 100</p>
+          <p class='rate'>Rate: $1000/h</p>
         </div>
         <div class="mdl-card__supporting-text">
           Hi I'm Chuck Norris. Whatever your problem is, you can rest assured that I will personally take on the challenge.
         </div>
         <div class="mdl-card__actions mdl-card--border">
-          <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-            Get Started
+          <a onClick="acceptHelp(${responses - 1})" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+            Start Video Chat
           </a>
         </div>
       </div>
@@ -99,6 +114,7 @@ function renderResponse() {
   </li>
   `
 }
+
 
 
 /* Help is on the way */
@@ -149,8 +165,8 @@ function renderHelpRequest(event, creator) {
           </div>
         </div>
         <div class="mdl-card__actions mdl-card--border center">
-          <a onClick="offerHelp.bind(null, ${session}) class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-            Get Started
+          <a onClick="offerHelp(${session})" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+            Offer Help
           </a>
         </div>
       </div>
@@ -159,8 +175,24 @@ function renderHelpRequest(event, creator) {
   `
 }
 
-function offerHelp(sessionAddress, bid) {
-  tutorApp.respondToHelpRequest(sessionAddress, )
+function offerHelp(sessionAddress) {
+  // TODO fake bid
+  // TODO show user that it worked?
+  var bid = 60
+  tutorApp.respondToHelpRequest(sessionAddress, bid, { from: accounts[1] })
+  .catch(function(err) {
+    alert(err)
+  })
+}
+
+function acceptHelp(index) {
+  console.log(index)
+  tutorApp = TutorApp.deployed()
+  tutorApp.selectTutor(index, { from: accounts[0] }).then(function () {
+    console.log('tutor selected')
+    // engage video chat on this end
+    // also engage on other end via event listener?
+  })
 }
 
 /* Video (Student) */
@@ -205,15 +237,29 @@ window.onload = function() {
     var tutorSelected = tutorApp.TutorSelected()
 
     // watchers
+
     sessionCreated.watch(once(function(event) {
       if (page == 4) {
 
         var creator = event.args._student
-        console.log(creator)
 
         getStudentDetails(creator, function(details) {
-          console.log(details)
           addHelpRequest(event, details)
+        })
+      }
+    }))
+
+    tutorResponded.watch(once(function (event) {
+      if (page == 3) {
+        var tutorObj = {}
+        tutorObj.bid = event.args.bid.valueOf()
+        tutorObj.sessionAddr = event.args.sessionAddr.valueOf()
+        tutorObj.tutorAddr = event.args.tutorAddr.valueOf()
+
+        tutorApp.getTutorDetails(tutorObj.tutorAddr).then(function(details) {
+          tutorObj.name = details[0].valueOf()
+          tutorObj.reputation = details[1].valueOf()
+          addResponse(tutorObj)
         })
       }
     }))
