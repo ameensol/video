@@ -1,6 +1,6 @@
 {
   "build": {
-    "index.html": "index.html",
+    "index.html": "ihelp.html",
     "app.js": [
       "javascripts/app.js"
     ],

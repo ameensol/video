@@ -45,15 +45,22 @@ function helpIsOnTheWay() {
     ether = parseInt(document.getElementById('etherBox').value.trim())
     tutorApp.registerStudent(name, { from: account, value: ether })
     .then(function() {
-      console.log(problem, subjects, timeLimit)
-      // create a contract
+      tutorApp.createSession(problem, tags, timeLimit).then(function () {
+        studentDashboard()
+      })
     })
   } else {
-    console.log(problem, subjects, timeLimit)
-    // create a contract
+    tutorApp.createSession(problem, tags, timeLimit).then(function () {
+      studentDashboard()
+    })
   }
 
   console.log('help is on the way')
+}
+
+function studentDashboard() {
+  // replace the whole page
+  // then replace the fields with the right data
 }
 
 /* Help is on the way */
@@ -63,12 +70,6 @@ function helpIsOnTheWay() {
 /* Video (Student) */
 
 /* Video (Tutor) */
-
-/* RENDERERS */
-/* Help us help you */
-function renderHUHY() {
-  return
-}
 
 // modifies student global
 function refreshStudentDetails(address, cb) {

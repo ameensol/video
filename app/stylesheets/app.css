@@ -2,6 +2,10 @@
 
 /* index.html */
 
+body {
+  background-color: #42A5F5;
+}
+
 #root {
   height: 100vh;
   text-align: center;
@@ -23,11 +27,11 @@ h1 {
 
 /* HELP US HELP YOU */
 
-.boxWrapper {
+#page2 .boxWrapper {
   width: 450px;
 }
 
-.textbox {
+#page2 .textbox {
   background-color: white;
   border: 10px solid white;
   border-radius: 10px;
@@ -48,4 +52,52 @@ h1 {
 
 #page2 .boxWrapper {
   padding: 0;
+}
+
+/* HELP IS ON THE WAY */
+
+#studentListWrapper {
+}
+
+#page3 .helpResponse {
+  margin: 0 auto;
+}
+
+#page3 .reputation {
+  position: relative;
+  left: 250px;
+  top: -50px;
+}
+
+#page4 .rate {
+  position: relative;
+  left: 152px;
+  top: -20px;
+}
+
+#page4 .helpResponse {
+  margin: 0 auto;
+}
+
+#page4 .studentName {
+  position: relative;
+  left: -20px;
+}
+
+#page4 .reputation {
+  position: relative;
+  left: -58px;
+}
+
+#page4 .problemStatement {
+  text-align: left;
+}
+
+#page4 .boxWrapper {
+  width: 450px;
+  padding: 0px;
+}
+
+#page4 .textbox {
+  background-color: white;
 }
