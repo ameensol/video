@@ -86,6 +86,18 @@ function addResponse(tutorObj) {
 
 var responses = 0
 
+function navPage5() {
+  document.getElementById('page4').style.display = 'none'
+  document.getElementById('page5').style.display = 'block'
+}
+
+function navPage6() {
+  document.getElementById('page5').style.display = 'none'
+  document.getElementById('page6').style.display = 'block'
+}
+
+
+
 function renderResponse(tutor) {
   console.log(tutor)
   responses += 1
@@ -95,7 +107,7 @@ function renderResponse(tutor) {
   <li class="mdl-list__item">
     <div class='helpResponse'>
       <div class="demo-card-wide mdl-card mdl-shadow--2dp">
-        <div class="mdl-card__title">
+        <div class="mdl-card__title" onclick="navPage5()">
           <h2 class="mdl-card__title-text">Chuck Norris</h2>
           <p class='reputation'>Reputation: 100</p>
           <p class='rate'>Rate: $1000/h</p>
