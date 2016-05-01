@@ -68,7 +68,7 @@ contract TutorApp {
     TutorResponded(sessionAddress, address(msg.sender), bid);
   }
 
-  function selectTutor(uint index) {
+  function appSelectTutor(uint index) {
     Student student = students[msg.sender];
     Session sessionAddress = Session(student.session);
     // should I also add the session to the tutor struct?
@@ -88,9 +88,9 @@ contract TutorApp {
   }
 
   function getSessionBidders(Session sessionAddress)
-    constant returns (uint count)
+    constant returns (uint)
   {
-    count = sessionAddress.getRespondingTutorsCount();
+    return sessionAddress.getRespondingTutorsCount();
   }
 
   function getSelectedTutor(Session sessionAddress)
@@ -178,7 +178,7 @@ contract Session {
 
   // student selects a tutor, they begin instruction
   function selectTutor(uint index)
-    onlyOwner atStage(Stages.RequestingHelp) returns (address tutorAddr)
+    returns (address tutorAddr)
   {
     // no tutors have responded yet
     if (respondingTutors.length == 0) throw;

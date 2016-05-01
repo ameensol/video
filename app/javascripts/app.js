@@ -6,8 +6,6 @@ var tutorApp;
 var student = {};
 var noop = function () {}
 var page = 1
-var requests = []
-var responses = []
 
 // keeping this here to mock
 var sessionAddr;
@@ -88,7 +86,7 @@ function addResponse(tutorObj) {
 
 var responses = 0
 
-function renderResponse(tutor, count) {
+function renderResponse(tutor) {
   responses += 1
   var rate = tutor.rate || 60
   var reputation = tutor.reputation || 1000
@@ -186,9 +184,10 @@ function offerHelp(sessionAddress) {
 }
 
 function acceptHelp(index) {
+  console.log('accept help')
   console.log(index)
   tutorApp = TutorApp.deployed()
-  tutorApp.selectTutor(index, { from: accounts[0] }).then(function () {
+  tutorApp.appSelectTutor(index, { from: accounts[0] }).then(function () {
     console.log('tutor selected')
     // engage video chat on this end
     // also engage on other end via event listener?
@@ -253,13 +252,14 @@ window.onload = function() {
       if (page == 3) {
         var tutorObj = {}
         tutorObj.bid = event.args.bid.valueOf()
-        tutorObj.sessionAddr = event.args.sessionAddr.valueOf()
-        tutorObj.tutorAddr = event.args.tutorAddr.valueOf()
+        tutorObj.sessionAddr = event.args.sessionAddr
+        tutorObj.tutorAddr = event.args.tutorAddr
 
         tutorApp.getTutorDetails(tutorObj.tutorAddr).then(function(details) {
-          tutorObj.name = details[0].valueOf()
+          console.log(details)
+          tutorObj.name = details[0]
           tutorObj.reputation = details[1].valueOf()
-          addResponse(tutorObj)
+          addResponse(tutorObj.sessionAddr)
         })
       }
     }))

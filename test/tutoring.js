@@ -115,7 +115,7 @@ contract('TutorApp', function(accounts) {
     .catch(done)
   })
 
-  it.only('should allow for ending the instruction phase', function(done) {
+  it('should allow for ending the instruction phase', function(done) {
     var tutoring = TutorApp.deployed()
 
     var problem = 'python is hard'
