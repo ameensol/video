@@ -35,6 +35,13 @@ contract TutorApp {
 
   event TutorSelected(address indexed tutorAddr);
 
+  event InstructionComplete(
+    address _session,
+    address _student,
+    address _tutor,
+    uint payment
+  );
+
   function registerStudent(string name) {
     Student student = students[msg.sender];
     student.name = name;
@@ -64,8 +71,20 @@ contract TutorApp {
   function selectTutor(uint index) {
     Student student = students[msg.sender];
     Session sessionAddress = Session(student.session);
+    // should I also add the session to the tutor struct?
     address tutorAddr = sessionAddress.selectTutor(index);
     TutorSelected(tutorAddr);
+  }
+
+  function completeInstruction(Session sessionAddr) {
+    uint payment;
+    address tutorAddr;
+    address studentAddr;
+    (payment, tutorAddr, studentAddr) = sessionAddr.completeInstruction();
+    Student student = students[studentAddr];
+    student.balance -= payment;
+    tutorAddr.send(payment);
+    InstructionComplete(sessionAddr, studentAddr, tutorAddr, payment);
   }
 
   function getSessionBidders(Session sessionAddress)
@@ -85,6 +104,10 @@ contract TutorApp {
   {
     Student student = students[addr];
     return (student.name, student.balance, student.reputation, student.session);
+  }
+
+  function getSessionStage(Session sessionAddr) constant returns (uint) {
+    return uint(sessionAddr.stage());
   }
 }
 
@@ -160,13 +183,19 @@ contract Session {
     return selectedTutor.addr;
   }
 
-  function completeInstruction() onlyOwner atStage(Stages.Instruction) {
-    // TODO payment
+  function completeInstruction()
+    onlyOwner atStage(Stages.Instruction) returns (uint, address, address)
+  {
     stage = Stages.Debrief;
+    uint payment = selectedTutor.bid * (now - creationTime);
+    return (payment, student, selectedTutor.addr);
   }
 
   /*
-  function rateTutor(uint rating) onlyOwner atStage(Stages.Debrief) {}
-  function rateStudent(uint rating) onlyOwner atStage(Stages.Debrief) {}
+  function rateTutor(uint rating) onlyOwner atStage(Stages.Debrief) {
+  }
+
+  function rateStudent(uint rating) onlyOwner atStage(Stages.Debrief) {
+  }
   */
 }

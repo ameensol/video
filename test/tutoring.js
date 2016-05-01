@@ -77,7 +77,7 @@ contract('TutorApp', function(accounts) {
     .catch(done)
   })
 
-  it.only('should allow student to select a tutor', function(done) {
+  it('should allow student to select a tutor', function(done) {
     var tutoring = TutorApp.deployed()
 
     var problem = 'python is hard'
@@ -106,6 +106,45 @@ contract('TutorApp', function(accounts) {
           var bid = tutor[1].valueOf()
           assert.equal(accounts[1], tutor[0].valueOf())
           assert.equal(bid, tutor[1].valueOf())
+          done()
+        }).catch(done)
+      }
+    })
+
+    tutoring.createSession(problem, tags, timeLimit, { from: accounts[0] })
+    .catch(done)
+  })
+
+  it.only('should allow for ending the instruction phase', function(done) {
+    var tutoring = TutorApp.deployed()
+
+    var problem = 'python is hard'
+    var tags = 'python'
+    var timeLimit = 10
+    var bid = 10
+
+    var sessionCreatedEvent = tutoring.SessionCreated()
+
+    sessionCreatedEvent.watch(function(error, result) {
+      sessionCreatedEvent.stopWatching()
+      var sessionAddr = result.args._session
+      if (error) {
+        console.log('fail')
+        console.log(error)
+      } else {
+        tutoring.respondToHelpRequest(sessionAddr, bid, {from: accounts[1]})
+        .then(function() {
+          return tutoring.getSessionBidders(sessionAddr)
+        }).then(function(count) {
+          return tutoring.selectTutor(0, { from: accounts[0] })
+        }).then(function() {
+          return tutoring.getSelectedTutor(sessionAddr)
+        }).then(function (tutor) {
+          return tutoring.completeInstruction(sessionAddr)
+        }).then(function () {
+          return tutoring.getSessionStage(sessionAddr)
+        }).then(function(stage) {
+          assert.equal(stage.valueOf(), 2)
           done()
         }).catch(done)
       }
