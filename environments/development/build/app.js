@@ -5491,7 +5491,6 @@ function ihelp() {
 }
 /* Help us help you */
 function helpIsOnTheWay() {
-  page = 3
   tutorApp = TutorApp.deployed()
 
   var name, ether
@@ -5519,8 +5518,33 @@ function helpIsOnTheWay() {
 }
 
 function studentDashboard() {
-  // replace the whole page
-  // then replace the fields with the right data
+  page = 3
+  document.getElementById('page2').style.display = 'none'
+  document.getElementById('page3').style.display = 'block'
+}
+
+function renderResponse() {
+  return `
+  <li class="mdl-list__item">
+    <div class='helpResponse'>
+      <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">Chuck Norris</h2>
+          <p class='reputation'>Reputation: ${tutor.reputation}</p>
+          <p class='rate'>Rate: ${tutor.rate}</p>
+        </div>
+        <div class="mdl-card__supporting-text">
+          Hi I'm Chuck Norris. Whatever your problem is, you can rest assured that I will personally take on the challenge.
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+          <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+            Get Started
+          </a>
+        </div>
+      </div>
+    </div>
+  </li>
+  `
 }
 
 
