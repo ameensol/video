@@ -1,42 +1,16 @@
-contract('MetaCoin', function(accounts) {
-  it("should put 10000 MetaCoin in the first account", function(done) {
-    var meta = MetaCoin.deployed();
+contract('TutorApp', function(accounts) {
 
-    meta.getBalance.call(accounts[0]).then(function(balance) {
-      assert.equal(balance.valueOf(), 10000, "10000 wasn't in the first account");
-    }).then(done).catch(done);
-  });
+  it('should register a student', function(done) {
+    var tutoring = TutorApp.deployed()
 
-  it("should send coin correctly", function(done) {
-    var meta = MetaCoin.deployed();
-
-    // Get initial balances of first and second account.
-    var account_one = accounts[0];
-    var account_two = accounts[1];
-
-    var account_one_starting_balance;
-    var account_two_starting_balance;
-    var account_one_ending_balance;
-    var account_two_ending_balance;
-
-    var amount = 10;
-
-    meta.getBalance.call(account_one).then(function(balance) {
-      account_one_starting_balance = balance.toNumber();
-      return meta.getBalance.call(account_two);
-    }).then(function(balance) {
-      account_two_starting_balance = balance.toNumber();
-      return meta.sendCoin(account_two, amount, {from: account_one});
-    }).then(function() {
-      return meta.getBalance.call(account_one);
-    }).then(function(balance) {
-      account_one_ending_balance = balance.toNumber();
-      return meta.getBalance.call(account_two);
-    }).then(function(balance) {
-      account_two_ending_balance = balance.toNumber();
-
-      assert.equal(account_one_ending_balance, account_one_starting_balance - amount, "Amount wasn't correctly taken from the sender");
-      assert.equal(account_two_ending_balance, account_two_starting_balance + amount, "Amount wasn't correctly sent to the receiver");
-    }).then(done).catch(done);
-  });
-});
+    tutoring.registerStudent('fred', { from: accounts[0], value: 10000 })
+    .then(function() {
+      return tutoring.getStudentDetails.call(accounts[0])
+    }).then(function(student) {
+      assert.equal(student[0].valueOf(), 'fred')
+      assert.equal(student[1].valueOf(), 10000)
+      assert.equal(student[2].valueOf(), 0)
+      done()
+    }).catch(done)
+  })
+})

@@ -1,6 +1,8 @@
 var accounts;
 var account;
-var student;
+var tutorApp;
+var student = {};
+var noop = function () {}
 
 /* ROUTER */
 /* Home */
@@ -8,9 +10,23 @@ function helpme() {
   document.getElementById('page1').style.display = 'none'
   document.getElementById('page2').style.display = 'block'
 
-  // TODO If student.name is not present, display a form for the name.
+  var nameForm
+  var nameHTML
 
-  document.getElementById('studentName').innerHTML = 'Ameen'
+  if (student.name) {
+    nameHTML = '<h4>Hello <span id="studentName">'+student.name+'</span></h4>'+
+      '<h4>You have <span id="studentBalance">'+student.balance+'</span>ether in your account</h4>'
+    document.getElementById('studentNameWrapper').innerHTML = nameHTML
+  } else {
+    nameForm = '<div class="mdl-textfield mdl-js-textfield boxWrapper">'+
+      '<h4>What is your name?</h4>'+
+      '<textarea class="mdl-textfield__input textbox" type="text" rows="1" id="nameBox"></textarea></div>'+
+      '<div class="mdl-textfield mdl-js-textfield boxWrapper">'+
+      '<h4>How much ether would you like to start with?</h4>'+
+      '<textarea class="mdl-textfield__input textbox" type="text" rows="1" id="etherBox"></textarea></div>'
+    document.getElementById('studentNameWrapper').innerHTML = nameForm
+  }
+
   console.log('helpme')
 }
 function ihelp() {
@@ -19,6 +35,21 @@ function ihelp() {
 /* Help me */
 
 /* Help us help you */
+function helpIsOnTheWay() {
+  tutorApp = TutorApp.deployed()
+
+  var name, ether
+  if (!student.name) {
+    name = document.getElementById('nameBox').value.trim()
+    ether = parseInt(document.getElementById('etherBox').value.trim())
+    tutorApp.registerStudent(name, { from: account, value: ether })
+    .then(function() {
+
+    })
+  }
+
+  console.log('help is on the way')
+}
 
 /* Help is on the way */
 
@@ -32,6 +63,19 @@ function ihelp() {
 /* Help us help you */
 function renderHUHY() {
   return
+}
+
+// modifies student global
+function refreshStudentDetails(address, cb) {
+  tutorApp = TutorApp.deployed()
+  tutorApp.getStudentDetails(address).then(function (details) {
+    student.name = details[0].valueOf()
+    student.balance = details[1].valueOf()
+    student.reputation = details[2].valueOf()
+    cb()
+  }).catch(function(err) {
+    alert(err)
+  })
 }
 
 window.onload = function() {
@@ -48,7 +92,8 @@ window.onload = function() {
 
     accounts = accs;
     account = accounts[0];
+    console.log(account)
 
-    // TODO get student details, save in *student* global
+    refreshStudentDetails(account, noop)
   });
 }

@@ -5414,14 +5414,14 @@ var factory = function factory(Pudding) {
   ;
 
   // Set up specific data for this class.
-  TutorApp.abi = [{ "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "tutors", "outputs": [{ "name": "name", "type": "string" }, { "name": "reputation", "type": "uint256" }], "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "students", "outputs": [{ "name": "name", "type": "string" }, { "name": "balance", "type": "uint256" }, { "name": "reputation", "type": "uint256" }], "type": "function" }];
-  TutorApp.binary = "606060405261017d806100126000396000f3606060405260e060020a60003504638224a3418114610026578063a6c807a914610042575b005b6100656004356000602081905290815260409020600281015482565b6100ef600435600160208190526000918252604090912090810154600282015483565b60808190526040606090815282546002600182161561010002600019019091160460a0819052819060c090859080156100df5780601f106100b4576101008083540402835291602001916100df565b820191906000526020600020905b8154815290600101906020018083116100c257829003601f168201915b5050935050505060405180910390f35b608082905260a0819052606080805283546002600019610100600184161502019091160460c0819052819060e0908690801561016c5780601f106101415761010080835404028352916020019161016c565b820191906000526020600020905b81548152906001019060200180831161014f57829003601f168201915b505094505050505060405180910390f3";
+  TutorApp.abi = [{ "constant": false, "inputs": [{ "name": "name", "type": "string" }], "name": "registerStudent", "outputs": [], "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "tutors", "outputs": [{ "name": "name", "type": "string" }, { "name": "reputation", "type": "uint256" }], "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "students", "outputs": [{ "name": "name", "type": "string" }, { "name": "balance", "type": "uint256" }, { "name": "reputation", "type": "uint256" }], "type": "function" }, { "constant": false, "inputs": [], "name": "addBalance", "outputs": [], "type": "function" }, { "constant": true, "inputs": [{ "name": "addr", "type": "address" }], "name": "getStudentDetails", "outputs": [{ "name": "", "type": "string" }, { "name": "", "type": "uint256" }, { "name": "", "type": "uint256" }], "type": "function" }];
+  TutorApp.binary = "6060604052610425806100126000396000f3606060405260e060020a600035046371e1744581146100475780638224a34114610103578063a6c807a91461011f578063b163cc3814610142578063d0b371bd14610169575b005b60206004803580820135601f810184900490930260809081016040526060848152610045946024939192918401918190838280828437505033600160a060020a0316600090815260016020818152604083208054895182865294839020999b509099508998600293821615610100026000190190911692909204601f9081019190910482019650919450925083901061038a57805160ff19168380011785555b506103ba9291505b808211156103e157600081556001016100ef565b6101f66004356000602081905290815260409020600281015482565b610280600435600160208190526000918252604090912090810154600282015483565b33600160a060020a0316600090815260016020819052604090912001805434019055610045565b60006060818152600160a060020a03600435908116835260016020818152604080862080840154600280830154835496871615610100026000190190961604601f810185900490940260a0908101909352608084815261030e98969796958695939485949192918591828280156104105780601f106103e557610100808354040283529160200191610410565b60808190526040606090815282546002600182161561010002600019019091160460a0819052819060c090859080156102705780601f1061024557610100808354040283529160200191610270565b820191906000526020600020905b81548152906001019060200180831161025357829003601f168201915b5050935050505060405180910390f35b608082905260a0819052606080805283546002600182161561010002600019019091160460c0819052819060e090869080156102fd5780601f106102d2576101008083540402835291602001916102fd565b820191906000526020600020905b8154815290600101906020018083116102e057829003601f168201915b505094505050505060405180910390f35b60405180806020018481526020018381526020018281038252858181518152602001915080519060200190808383829060006004602084601f0104600302600f01f150905090810190601f16801561037a5780820380516001836020036101000a031916815260200191505b5094505050505060405180910390f35b828001600101855582156100e7579182015b828111156100e757825182600050559160200191906001019061039c565b50503481600101600082828250540192505081905550600081600201600050819055505050565b5090565b820191906000526020600020905b8154815290600101906020018083116103f357829003601f168201915b5050505050925093509350935050919390925056";
 
-  if ("0x1c3d7d1a9c83b1b6a4a5c542ec4d381411992421" != "") {
-    TutorApp.address = "0x1c3d7d1a9c83b1b6a4a5c542ec4d381411992421";
+  if ("0xf709ded055632492304f7f52641542ab2d949bbb" != "") {
+    TutorApp.address = "0xf709ded055632492304f7f52641542ab2d949bbb";
 
     // Backward compatibility; Deprecated.
-    TutorApp.deployed_address = "0x1c3d7d1a9c83b1b6a4a5c542ec4d381411992421";
+    TutorApp.deployed_address = "0xf709ded055632492304f7f52641542ab2d949bbb";
   }
 
   TutorApp.generated_with = "1.0.3";
@@ -5447,7 +5447,9 @@ if (typeof module != "undefined") {
 
 var accounts;
 var account;
-var student;
+var tutorApp;
+var student = {};
+var noop = function () {}
 
 /* ROUTER */
 /* Home */
@@ -5455,9 +5457,23 @@ function helpme() {
   document.getElementById('page1').style.display = 'none'
   document.getElementById('page2').style.display = 'block'
 
-  // TODO If student.name is not present, display a form for the name.
+  var nameForm
+  var nameHTML
 
-  document.getElementById('studentName').innerHTML = 'Ameen'
+  if (student.name) {
+    nameHTML = '<h4>Hello <span id="studentName">'+student.name+'</span></h4>'+
+      '<h4>You have <span id="studentBalance">'+student.balance+'</span>ether in your account</h4>'
+    document.getElementById('studentNameWrapper').innerHTML = nameHTML
+  } else {
+    nameForm = '<div class="mdl-textfield mdl-js-textfield boxWrapper">'+
+      '<h4>What is your name?</h4>'+
+      '<textarea class="mdl-textfield__input textbox" type="text" rows="1" id="nameBox"></textarea></div>'+
+      '<div class="mdl-textfield mdl-js-textfield boxWrapper">'+
+      '<h4>How much ether would you like to start with?</h4>'+
+      '<textarea class="mdl-textfield__input textbox" type="text" rows="1" id="etherBox"></textarea></div>'
+    document.getElementById('studentNameWrapper').innerHTML = nameForm
+  }
+
   console.log('helpme')
 }
 function ihelp() {
@@ -5466,6 +5482,21 @@ function ihelp() {
 /* Help me */
 
 /* Help us help you */
+function helpIsOnTheWay() {
+  tutorApp = TutorApp.deployed()
+
+  var name, ether
+  if (!student.name) {
+    name = document.getElementById('nameBox').value.trim()
+    ether = parseInt(document.getElementById('etherBox').value.trim())
+    tutorApp.registerStudent(name, { from: account, value: ether })
+    .then(function() {
+
+    })
+  }
+
+  console.log('help is on the way')
+}
 
 /* Help is on the way */
 
@@ -5479,6 +5510,19 @@ function ihelp() {
 /* Help us help you */
 function renderHUHY() {
   return
+}
+
+// modifies student global
+function refreshStudentDetails(address, cb) {
+  tutorApp = TutorApp.deployed()
+  tutorApp.getStudentDetails(address).then(function (details) {
+    student.name = details[0].valueOf()
+    student.balance = details[1].valueOf()
+    student.reputation = details[2].valueOf()
+    cb()
+  }).catch(function(err) {
+    alert(err)
+  })
 }
 
 window.onload = function() {
@@ -5495,8 +5539,9 @@ window.onload = function() {
 
     accounts = accs;
     account = accounts[0];
+    console.log(account)
 
-    // TODO get student details, save in *student* global
+    refreshStudentDetails(account, noop)
   });
 }
 ;
