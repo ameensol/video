@@ -39,7 +39,7 @@ contract TutorApp {
     Student student = students[msg.sender];
     student.name = name;
     student.balance += msg.value;
-    student.reputation = 0;
+    student.reputation = 100;
   }
 
   function createSession(string problem, string tags, uint timeLimit) {

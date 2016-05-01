@@ -1,12 +1,18 @@
 var accounts;
-var account;
+var account1;
+var account2;
+var tutor;
 var tutorApp;
 var student = {};
 var noop = function () {}
+var page = 1
+var requests = []
+var responses = []
 
 /* ROUTER */
 /* Home */
 function helpme() {
+  page = 2
   document.getElementById('page1').style.display = 'none'
   document.getElementById('page2').style.display = 'block'
 
@@ -30,27 +36,34 @@ function helpme() {
   console.log('helpme')
 }
 function ihelp() {
+  page = 4
+  document.getElementById('page1').style.display = 'none'
+  document.getElementById('page4').style.display = 'block'
+
   console.log('ihelp')
 }
 /* Help us help you */
 function helpIsOnTheWay() {
+  page = 3
   tutorApp = TutorApp.deployed()
 
   var name, ether
   var problem = document.getElementById('problemBox').value.trim()
-  var subjects = document.getElementById('subjectBox').value.trim().toLowerCase()
+  var tags = document.getElementById('subjectBox').value.trim().toLowerCase()
   var timeLimit = parseInt(document.getElementById('timeLimitBox').value.trim())
   if (!student.name) {
     name = document.getElementById('nameBox').value.trim()
     ether = parseInt(document.getElementById('etherBox').value.trim())
-    tutorApp.registerStudent(name, { from: account, value: ether })
+    tutorApp.registerStudent(name, { from: account1, value: ether })
     .then(function() {
-      tutorApp.createSession(problem, tags, timeLimit).then(function () {
+      tutorApp.createSession(problem, tags, timeLimit, { from: account1 })
+      .then(function () {
         studentDashboard()
       })
     })
   } else {
-    tutorApp.createSession(problem, tags, timeLimit).then(function () {
+    tutorApp.createSession(problem, tags, timeLimit, { from: account1 })
+    .then(function () {
       studentDashboard()
     })
   }
@@ -63,22 +76,77 @@ function studentDashboard() {
   // then replace the fields with the right data
 }
 
+
 /* Help is on the way */
 
 /* Helper dashboard */
+function addHelpRequest(event, studentData) {
+  var helperList = document.getElementById('helperList')
+  var placeholder = document.getElementById('helpRequestPlaceholder')
+  if (placeholder) { helperList.innerHTML = '' }
+  helperList.innerHTML = renderHelpRequest(event, studentData) + helperList.innerHTML
+}
+
+function renderHelpRequest(event, creator) {
+  var problem = event.args._problem
+  var tags = event.args._tags
+  // var created = new Date(parseInt(event.args.creationTime.valueOf() * 1000))
+  // var expires = new Date(new Date() - created).getTime() / 1000 / 60
+  return `
+  <li class="mdl-list__item">
+    <div class='helpResponse'>
+      <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--5-col">
+              <h2 class="mdl-card__title-text studentName">${creator.name}</h2>
+              <p class='reputation'>Reputation: ${creator.reputation}</p>
+              <p class='created'>Created ${5}m ago</p>
+              <p class='expires'>Expires in ${5}m </p>
+            </div>
+            <div class="mdl-cell mdl-cell--7-col">
+              <p class='problemStatement'>${problem}</p>
+            </div>
+          </div>
+        </div>
+        <div class="mdl-card__supporting-text">
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--9-col">
+              <div class="mdl-textfield mdl-js-textfield boxWrapper">
+                <textarea class="mdl-textfield__input textbox helperMessage" type="text" rows="2" placeholder="Explain briefly how you plan to approach the problem."></textarea>
+                </div>
+            </div>
+            <div class="mdl-cell mdl-cell--3-col">
+              <div class="mdl-textfield mdl-js-textfield boxWrapper">
+                <textarea class="mdl-textfield__input textbox helperMessage" type="text" rows="2" placeholder="Rate ($/h)"></textarea>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="mdl-card__actions mdl-card--border center">
+          <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+            Get Started
+          </a>
+        </div>
+      </div>
+    </div>
+  </li>
+  `
+}
 
 /* Video (Student) */
 
 /* Video (Tutor) */
 
-// modifies student global
-function refreshStudentDetails(address, cb) {
+// modifies student object passed in
+function getStudentDetails(address, cb) {
+  var student = {}
   tutorApp = TutorApp.deployed()
   tutorApp.getStudentDetails(address).then(function (details) {
     student.name = details[0].valueOf()
     student.balance = details[1].valueOf()
     student.reputation = details[2].valueOf()
-    cb()
+    cb(student)
   }).catch(function(err) {
     alert(err)
   })
@@ -97,9 +165,47 @@ window.onload = function() {
     }
 
     accounts = accs;
-    account = accounts[0];
-    console.log(account)
+    account1 = accounts[0];
+    account2 = accounts[1]
 
-    refreshStudentDetails(account, noop)
+    tutorApp = TutorApp.deployed()
+
+    // evente
+    var sessionCreated = tutorApp.SessionCreated()
+    var tutorResponded = tutorApp.TutorResponded()
+    var tutorSelected = tutorApp.TutorSelected()
+
+    // watchers
+    sessionCreated.watch(once(function(event) {
+      if (page == 4) {
+
+        var creator = event.args._student
+        console.log(creator)
+
+        getStudentDetails(creator, function(details) {
+          console.log(details)
+          addHelpRequest(event, details)
+        })
+      }
+    }))
+
+    // only run function f once per event
+    function once(f) {
+      var store = {}
+      return function(error, event) {
+        if (error) {
+          console.log(error)
+        } else {
+          if (!store[event.transactionHash]) {
+            store[event.transactionHash] = event
+            f(event)
+          }
+        }
+      }
+    }
+
+    getStudentDetails(account1, function(data) {
+      student = data
+    })
   });
 }

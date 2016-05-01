@@ -9,6 +9,25 @@
   <title>Instant Tutors</title>
   <link href="./app.css" rel='stylesheet' type='text/css'>
   <script src="./app.js"></script>
+  <!-- Wide card with share menu button -->
+  <style>
+  .demo-card-wide.mdl-card {
+    width: 512px;
+  }
+  #page3 .demo-card-wide > .mdl-card__title {
+    color: #fff;
+    height: 176px;
+    background: url('http://www.wnd.com/files/2013/11/chuck-norris-600.jpg') center / cover;
+  }
+  #page4 .demo-card-wide > .mdl-card__title {
+    color: #fff;
+    height: 176px;
+    background-color:purple;
+  }
+  .demo-card-wide > .mdl-card__menu {
+    color: #fff;
+  }
+  </style>
 </head>
 <body>
   <div id='root'>
@@ -56,11 +75,22 @@
           <button id='getHelpButton' class="mdl-button mdl-js-button mdl-button--raised" onclick=helpIsOnTheWay()>
               Get Help
           </button>
-          </div>
         </div>
       </div>
     </div> <!-- page 2 -->
 
+    <div id='page4' style='display:none'>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <h1>Helper dashboard</h1>
+      <div id='helperListWrapper'>
+        <ul id='helperList' class='mdl-list'>
+          <h3 id='helpRequestPlaceholder'>New help requests will show up here</h3>
+        </ul>
+      </div>
+    </div> <!-- page 4 -->
   </div>
 </body>
 </html>

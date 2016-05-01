@@ -1,5 +1,13 @@
 /* Global Styles */
 
+#page4 .center {
+  text-align: center;
+}
+
+#page3 .center {
+  text-align: center;
+}
+
 /* index.html */
 
 body {
@@ -86,7 +94,7 @@ h1 {
 
 #page4 .reputation {
   position: relative;
-  left: -58px;
+  left: -18px;
 }
 
 #page4 .problemStatement {
@@ -100,4 +108,19 @@ h1 {
 
 #page4 .textbox {
   background-color: white;
+}
+
+#page4 .created {
+  position: relative;
+  left: -18px;
+  top: -18px;
+}
+
+#page4 .expires {
+  font-size: 16px;
+  text-decoration: underline;
+}
+
+#page4 .helpResponse {
+  text-align:left;
 }

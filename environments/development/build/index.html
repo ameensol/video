@@ -6,16 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.green-purple.min.css">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.blue-purple.min.css">
   <script defer src="https://code.getmdl.io/1.1.1/material.min.js"></script>
   <title>Instant Tutors</title>
   <link href="./app.css" rel='stylesheet' type='text/css'>
   <script src="./app.js"></script>
+  <!-- Wide card with share menu button -->
   <style>
   .demo-card-wide.mdl-card {
     width: 512px;
   }
-  .demo-card-wide > .mdl-card__title {
+  #page3 .demo-card-wide > .mdl-card__title {
+    color: #fff;
+    height: 176px;
+    background: url('http://www.wnd.com/files/2013/11/chuck-norris-600.jpg') center / cover;
+  }
+  #page4 .demo-card-wide > .mdl-card__title {
     color: #fff;
     height: 176px;
     background-color:purple;
@@ -27,53 +33,66 @@
 </head>
 <body>
   <div id='root'>
-    <div id='page4'>
+
+    <div id='page1'>
+      <br/>
+      <br/>
+      <br/>
+      <h1>Instant Tutors</h1>
+      <h3>The fastest way to get unstuck</h3>
+      <!-- Raised button -->
+      <button id='helpmeButton' class="mdl-button mdl-js-button mdl-button--raised" onclick=helpme()>
+        I need help
+      </button>
+      <!-- Raised button -->
+      <button id='ihelpButton' class="mdl-button mdl-js-button mdl-button--raised" onclick=ihelp()>
+        I'm here to help
+      </button>
+    </div><!-- page 1 -->
+
+    <div id='page2' style='display:none'>
+      <br/>
+      <br/>
+      <br/>
+      <h1>Help us help you!</h1>
+      <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--6-col">
+          <div class="mdl-textfield mdl-js-textfield boxWrapper">
+            <h4>What seems to be the problem?</h4>
+            <textarea class="mdl-textfield__input textbox" type="text" rows="4" id="problemBox"></textarea>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield boxWrapper">
+            <h4>What subjects does your problem involve?</h4>
+            <textarea id='subjectBox' class="mdl-textfield__input textbox" type="text" rows="1"></textarea>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield boxWrapper">
+            <h4>How long are you willing to wait?</h4>
+            <textarea id='timeLimitBox' class="mdl-textfield__input textbox" type="text" rows="1"></textarea>
+          </div>
+        </div>
+        <div class="mdl-cell mdl-cell--6-col">
+          <div id='studentNameWrapper'></div>
+          <br/>
+          <br/>
+          <button id='getHelpButton' class="mdl-button mdl-js-button mdl-button--raised" onclick=helpIsOnTheWay()>
+              Get Help
+          </button>
+        </div>
+      </div>
+    </div> <!-- page 2 -->
+
+    <div id='page4' style='display:none'>
       <br/>
       <br/>
       <br/>
       <br/>
       <h1>Helper dashboard</h1>
       <div id='helperListWrapper'>
-        <ul class='mdl-list'>
-          <li class="mdl-list__item">
-            <div class='helpResponse'>
-              <div class="demo-card-wide mdl-card mdl-shadow--2dp">
-                <div class="mdl-card__title">
-                  <div class="mdl-grid">
-                    <div class="mdl-cell mdl-cell--5-col">
-                      <h2 class="mdl-card__title-text studentName">Chuck Norris</h2>
-                      <p class='reputation'>Reputation: 100</p>
-                    </div>
-                    <div class="mdl-cell mdl-cell--7-col">
-                      <p class='problemStatement'>Lorem ipsum dolor sit amet, sed ne similique assueverit delicatissimi, harum populo antiopam ea ius. Nemore saperet eleifend et quo. Eos animal senserit at. Ex quo oblique veritus appetere, ea nostrud feugiat duo. </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="mdl-card__supporting-text">
-                  <div class="mdl-grid">
-                    <div class="mdl-cell mdl-cell--9-col">
-                      <div class="mdl-textfield mdl-js-textfield boxWrapper">
-                        <textarea class="mdl-textfield__input textbox helperMessage" type="text" rows="2" placeholder="Explain briefly how you plan to approach the problem."></textarea>
-                        </div>
-                    </div>
-                    <div class="mdl-cell mdl-cell--3-col">
-                      <div class="mdl-textfield mdl-js-textfield boxWrapper">
-                        <textarea class="mdl-textfield__input textbox helperMessage" type="text" rows="2" placeholder="Rate ($/h)"></textarea>
-                        </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="mdl-card__actions mdl-card--border">
-                  <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                    Get Started
-                  </a>
-                </div>
-              </div>
-            </div>
-          </li>
+        <ul id='helperList' class='mdl-list'>
+          <h3 id='helpRequestPlaceholder'>New help requests will show up here</h3>
         </ul>
       </div>
-    </div>
+    </div> <!-- page 4 -->
   </div>
 </body>
 </html>
