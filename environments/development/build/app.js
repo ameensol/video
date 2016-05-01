@@ -5462,7 +5462,7 @@ function helpme() {
 
   if (student.name) {
     nameHTML = '<h4>Hello <span id="studentName">'+student.name+'</span></h4>'+
-      '<h4>You have <span id="studentBalance">'+student.balance+'</span>ether in your account</h4>'
+      '<h4>You have <span id="studentBalance">'+student.balance+' </span>ether in your account</h4>'
     document.getElementById('studentNameWrapper').innerHTML = nameHTML
   } else {
     nameForm = '<div class="mdl-textfield mdl-js-textfield boxWrapper">'+
@@ -5479,20 +5479,25 @@ function helpme() {
 function ihelp() {
   console.log('ihelp')
 }
-/* Help me */
-
 /* Help us help you */
 function helpIsOnTheWay() {
   tutorApp = TutorApp.deployed()
 
   var name, ether
+  var problem = document.getElementById('problemBox').value.trim()
+  var subjects = document.getElementById('subjectBox').value.trim().toLowerCase()
+  var timeLimit = parseInt(document.getElementById('timeLimitBox').value.trim())
   if (!student.name) {
     name = document.getElementById('nameBox').value.trim()
     ether = parseInt(document.getElementById('etherBox').value.trim())
     tutorApp.registerStudent(name, { from: account, value: ether })
     .then(function() {
-
+      console.log(problem, subjects, timeLimit)
+      // create a contract
     })
+  } else {
+    console.log(problem, subjects, timeLimit)
+    // create a contract
   }
 
   console.log('help is on the way')
