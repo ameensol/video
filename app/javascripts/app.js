@@ -87,7 +87,7 @@ function addResponse(tutorObj) {
 var responses = 0
 
 function navPage5() {
-  document.getElementById('page4').style.display = 'none'
+  document.getElementById('page3').style.display = 'none'
   document.getElementById('page5').style.display = 'block'
 }
 
